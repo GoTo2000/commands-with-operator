@@ -1,6 +1,6 @@
 {
   "name": "commands-with-operator",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A Probot extension that adds slash commands with operator to GitHub.",
   "main": "index.js",
   "scripts": {
