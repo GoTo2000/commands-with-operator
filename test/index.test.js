@@ -33,7 +33,7 @@ describe('commands', () => {
       }
     })
 
-    expect(callback).not.toHaveBeenCalled()
+    expect(callback).toHaveBeenCalled()
   })
 
   it('does not call callback for other commands', async () => {

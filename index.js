@@ -5,14 +5,18 @@ class Command {
     this.callback = callback
   }
 
-  get matcher () {
+  get withArgsMatcher () {
     return /^\/([\w]+)([+|-]+) \b *(.*)?$/m
+  }
+
+  get withoutArgsMatcher () {
+    return /^\/([\w]+)([+|-])*(.*)?$/m
   }
 
   listener (context) {
     const { comment, issue, pull_request: pr } = context.payload
 
-    const command = (comment || issue || pr).body.match(this.matcher)
+    const command = (comment || issue || pr).body.match(this.withArgsMatcher) || (comment || issue || pr).body.match(this.withoutArgsMatcher)
 
     if (command && this.name === command[1] && this.operator === command[2]) {
       return this.callback(context, { name: command[1], operator: command[2], arguments: command[3] })
