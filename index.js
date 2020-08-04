@@ -22,8 +22,8 @@ class Command {
     }
 
     if (commentAndCommandContent.length === 2) {
-      const preComment = commentAndCommandContent[0].trimEnd()
-      const commandContent = commentAndCommandContent[1].trimStart()
+      const preComment = commentAndCommandContent[0].trim()
+      const commandContent = commentAndCommandContent[1].trim()
       const commandDetail = commandContent.match(this.matcher)
       if (commandDetail && this.name === commandDetail[1] && this.operator === commandDetail[2]) {
         return this.callback(context, this.constructCommandDetailWithComment(preComment, commandDetail))
