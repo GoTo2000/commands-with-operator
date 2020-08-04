@@ -16,12 +16,12 @@ describe('commands', () => {
       event: 'issue_comment',
       payload: {
         action: 'created',
-        comment: { body: 'hello world\n\n/foo+ bar' }
+        comment: { body: 'hello world\n\n/foo+ bar1,bar2' }
       }
     })
 
     expect(callback).toHaveBeenCalled()
-    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar', 'preComment': null })
+    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar1,bar2', 'preComment': null })
   })
 
   it('invokes the command without arguments', async () => {
