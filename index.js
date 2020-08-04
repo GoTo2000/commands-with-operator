@@ -9,13 +9,42 @@ class Command {
     return /^\/([\w]+)([+|-]) *(.*)?$/m
   }
 
+  get commentIdentifier () {
+    return '|>'
+  }
+
   listener (context) {
     const { comment, issue, pull_request: pr } = context.payload
+    const commentAndCommandContent = (comment || issue || pr).body.split(this.commentIdentifier)
 
-    const command = (comment || issue || pr).body.match(this.matcher)
+    if (!commentAndCommandContent || commentAndCommandContent.length === 0 || commentAndCommandContent.length > 2) {
+      return
+    }
 
-    if (command && this.name === command[1] && this.operator === command[2]) {
-      return this.callback(context, { name: command[1], operator: command[2], arguments: command[3] })
+    if (commentAndCommandContent.length === 2) {
+      const preComment = commentAndCommandContent[0].trimEnd()
+      const commandContent = commentAndCommandContent[1].trimStart()
+      const commandDetail = commandContent.match(this.matcher)
+      if (commandDetail && this.name === commandDetail[1] && this.operator === commandDetail[2]) {
+        return this.callback(context, this.constructCommandDetailWithComment(preComment, commandDetail))
+      }
+    }
+
+    const commandContent = commentAndCommandContent[0]
+    const commandDetail = commandContent.match(this.matcher)
+    if (commandDetail && this.name === commandDetail[1] && this.operator === commandDetail[2]) {
+      return this.callback(context, this.constructCommandDetailWithComment(null, commandDetail))
+    }
+  }
+
+  constructCommandDetailWithComment (preComment, commandDetail) {
+    if (commandDetail && this.name === commandDetail[1] && this.operator === commandDetail[2]) {
+      return {
+        name: commandDetail[1],
+        operator: commandDetail[2],
+        arguments: commandDetail[3],
+        preComment
+      }
     }
   }
 }

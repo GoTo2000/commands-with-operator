@@ -21,7 +21,7 @@ describe('commands', () => {
     })
 
     expect(callback).toHaveBeenCalled()
-    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar' })
+    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar', 'preComment': null })
   })
 
   it('invokes the command without arguments', async () => {
@@ -34,6 +34,32 @@ describe('commands', () => {
     })
 
     expect(callback).toHaveBeenCalled()
+  })
+
+  it('invokes the command with comment', async () => {
+    await robot.receive({
+      event: 'issue_comment',
+      payload: {
+        action: 'created',
+        comment: { body: 'test\n\n |> /foo+ bar' }
+      }
+    })
+
+    expect(callback).toHaveBeenCalled()
+    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar', preComment: 'test' })
+  })
+
+  it('invokes the command with comment and without space', async () => {
+    await robot.receive({
+      event: 'issue_comment',
+      payload: {
+        action: 'created',
+        comment: { body: 'test\n\n|>/foo+ bar' }
+      }
+    })
+
+    expect(callback).toHaveBeenCalled()
+    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar', preComment: 'test' })
   })
 
   it('does not call callback for other commands', async () => {
@@ -102,7 +128,7 @@ describe('commands', () => {
     })
 
     expect(callback).toHaveBeenCalled()
-    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar' })
+    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar', preComment: null })
   })
 
   it('invokes command on pull_request.opened', async () => {
@@ -115,6 +141,6 @@ describe('commands', () => {
     })
 
     expect(callback).toHaveBeenCalled()
-    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar' })
+    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar', preComment: null })
   })
 })
