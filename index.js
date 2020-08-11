@@ -25,7 +25,7 @@ class Command {
       const preComment = commentAndCommandContent[0].trim()
       const commandContent = commentAndCommandContent[1].trim()
       const commandDetail = commandContent.match(this.matcher)
-      if (commandDetail && this.name === commandDetail[1] && this.operator === commandDetail[2]) {
+      if (commandDetail && this.name === commandDetail[1].toLocaleLowerCase() && this.operator === commandDetail[2]) {
         return this.callback(context, this.constructCommandDetailWithComment(preComment, commandDetail))
       }
     }
@@ -38,13 +38,11 @@ class Command {
   }
 
   constructCommandDetailWithComment (preComment, commandDetail) {
-    if (commandDetail && this.name === commandDetail[1] && this.operator === commandDetail[2]) {
-      return {
-        name: commandDetail[1],
-        operator: commandDetail[2],
-        arguments: commandDetail[3],
-        preComment
-      }
+    return {
+      name: this.name,
+      operator: this.operator,
+      arguments: commandDetail[3],
+      preComment
     }
   }
 }
