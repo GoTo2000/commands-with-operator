@@ -32,7 +32,7 @@ class Command {
 
     const commandContent = commentAndCommandContent[0]
     const commandDetail = commandContent.match(this.matcher)
-    if (commandDetail && this.name === commandDetail[1] && this.operator === commandDetail[2]) {
+    if (commandDetail && this.name === commandDetail[1].toLocaleLowerCase() && this.operator === commandDetail[2]) {
       return this.callback(context, this.constructCommandDetailWithComment(null, commandDetail))
     }
   }

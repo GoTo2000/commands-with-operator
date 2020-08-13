@@ -49,6 +49,32 @@ describe('commands', () => {
     expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar', preComment: 'test' })
   })
 
+  it('invokes the uppercase command', async () => {
+    await robot.receive({
+      event: 'issue_comment',
+      payload: {
+        action: 'created',
+        comment: { body: '/Foo+ bar' }
+      }
+    })
+
+    expect(callback).toHaveBeenCalled()
+    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar', preComment: null })
+  })
+
+  it('invokes the uppercase command with comment', async () => {
+    await robot.receive({
+      event: 'issue_comment',
+      payload: {
+        action: 'created',
+        comment: { body: 'test |> /FOo+ bar' }
+      }
+    })
+
+    expect(callback).toHaveBeenCalled()
+    expect(callback.mock.calls[0][1]).toEqual({ name: 'foo', operator: '+', arguments: 'bar', preComment: 'test' })
+  })
+
   it('invokes the command with comment and without space', async () => {
     await robot.receive({
       event: 'issue_comment',
